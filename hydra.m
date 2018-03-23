@@ -1,0 +1,49 @@
+ds = xlsread('Hydrea1.xlsx') %importing the data into an array
+
+DOutput = ds(:,34) %This is the desired Output
+Input = ds(:,[1:30])
+T = ones(72,1)
+T1 = ones(71,1)
+T2 = ones(1,1)
+Input =  [Input T]
+%TestInput = Input(72,:);
+Input(:,1) = Input(:,1) / max(abs(Input(:,1)));
+TestInput = [Input(72,1:3) Input(72,6) Input(72,8) Input(72,10) Input(72,12:13) Input(72,15:17) Input(72,19:28) Input(72,30) T2];
+
+TrainInput = [Input(1:71,1:3) Input(1:71,6) Input(1:71,8) Input(1:71,10) Input(1:71,12:13) Input(1:71,15:17) Input(1:71,19:28) Input(1:71,30) T1];
+%TrainInput = TrainInput';
+TrainOutput = DOutput(1:71,:);
+%TrainOutput = TrainOutput';
+TestOutput = DOutput(72,:);
+%[errorValue,V, W, Output_of_Output] = BPOnline(TrainInput,TrainOutput);
+[errorValue,EndErrorValue,W, V, Output_of_Output] = BackPropagation(TrainInput,TrainOutput, 1000000,4);
+ 
+
+
+%Testing Now
+[l,b] = size(TestInput);
+ 
+[n,a] = size(TestOutput);  
+
+Output_of_Input = TestInput;
+
+    Hidden_Output = 1./(1+exp(-(Output_of_Input * V)));
+    Hidden_Output = [Hidden_Output ones(l,1)]; %adding a column of ones to the output of hiddenlayer 
+
+    Output_of_Output2 = 1./(1+exp(-(Hidden_Output * W))); %sigmoid
+   
+
+
+
+ n = 1000;
+    lr = 0.2
+    % W = [0.4229, 0.0942, 0.9134]';
+    W1 = rand(23,4)
+    W2 = rand(5,1)
+    
+ [W1, W2, startError, endError] = TowLayerBP(TrainInput, W1, W2, TrainOutput, n, lr);
+
+
+
+
+
